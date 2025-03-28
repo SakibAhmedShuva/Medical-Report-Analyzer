@@ -1,0 +1,238 @@
+{
+  "info": {
+    "_postman_id": "f8a3e9c5-7b2d-4e1c-b9a2-d8f6e3a5c4b1",
+    "name": "NOW Medical Report OCR API",
+    "description": "API for processing medical reports (PDF/images) and extracting structured test data",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Process Medical Report",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": ""
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{base_url}}/process-report",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "process-report"
+          ]
+        },
+        "description": "Uploads a medical report (PDF or image) and returns structured test data"
+      },
+      "response": [
+        {
+          "name": "Successful Response",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/process-report",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "process-report"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"medical_tests\": [\n    {\n      \"test_name\": \"Hemoglobin\",\n      \"test_value\": \"11.5\",\n      \"reference_name\": \"reference_range\",\n      \"reference_value\": \"11.2-15.7\"\n    },\n    {\n      \"test_name\": \"Leukocytes\",\n      \"test_value\": \"3.94\",\n      \"reference_name\": \"reference_range\",\n      \"reference_value\": \"3.98-10.04\"\n    },\n    {\n      \"test_name\": \"Erythrocytes\",\n      \"test_value\": \"4.35\",\n      \"reference_name\": \"reference_range\",\n      \"reference_value\": \"3.8-5.2\"\n    }\n  ]\n}"
+        },
+        {
+          "name": "No File Provided",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": []
+            },
+            "url": {
+              "raw": "{{base_url}}/process-report",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "process-report"
+              ]
+            }
+          },
+          "status": "Bad Request",
+          "code": 400,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"error\": \"No file provided\"\n}"
+        },
+        {
+          "name": "Invalid File Type",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/process-report",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "process-report"
+              ]
+            }
+          },
+          "status": "Bad Request",
+          "code": 400,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"error\": \"File type not allowed. Allowed types: pdf, png, jpg, jpeg\"\n}"
+        },
+        {
+          "name": "Processing Error",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/process-report",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "process-report"
+              ]
+            }
+          },
+          "status": "Internal Server Error",
+          "code": 500,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"error\": \"Error message details\"\n}"
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Test for successful response",
+          "if (pm.response.code === 200) {",
+          "    pm.test(\"Status code is 200\", function () {",
+          "        pm.response.to.have.status(200);",
+          "    });",
+          "    ",
+          "    pm.test(\"Response has medical_tests array\", function () {",
+          "        var jsonData = pm.response.json();",
+          "        pm.expect(jsonData).to.have.property('medical_tests');",
+          "        pm.expect(jsonData.medical_tests).to.be.an('array');",
+          "    });",
+          "    ",
+          "    pm.test(\"Medical tests have required properties\", function () {",
+          "        var jsonData = pm.response.json();",
+          "        if (jsonData.medical_tests.length > 0) {",
+          "            var test = jsonData.medical_tests[0];",
+          "            pm.expect(test).to.have.property('test_name');",
+          "            pm.expect(test).to.have.property('test_value');",
+          "            pm.expect(test).to.have.property('reference_name');",
+          "            pm.expect(test).to.have.property('reference_value');",
+          "        }",
+          "    });",
+          "}",
+          "",
+          "// Test for error responses",
+          "if (pm.response.code === 400 || pm.response.code === 500) {",
+          "    pm.test(\"Error response has error property\", function () {",
+          "        var jsonData = pm.response.json();",
+          "        pm.expect(jsonData).to.have.property('error');",
+          "    });",
+          "}"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5000",
+      "type": "string"
+    }
+  ]
+}
